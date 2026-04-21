@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,6 +31,7 @@ fun AppBar (
     onThemeChange: (ThemeMode) -> Unit,
 ) {
 
+    //back icon visible if NOT in home screen
     val navigationIcon : (@Composable () -> Unit) = {
         if (!title.contains("Shopping List")){
             IconButton(
@@ -44,7 +46,8 @@ fun AppBar (
         }
     }
 
-    val actionIcons : @Composable (RowScope.() -> Unit) = {
+    //location and theme selector dropdown visible ONLY in home screen
+    val actionIcons : (@Composable (RowScope.() -> Unit)) = {
         if (title.contains("Shopping List")){
             Row(
                 modifier = Modifier
@@ -59,7 +62,7 @@ fun AppBar (
                     Icon(
                         imageVector = Icons.Default.LocationOn,
                         contentDescription = "location",
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -82,7 +85,7 @@ fun AppBar (
                     .padding(start = 4.dp)
                     .heightIn(30.dp),
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 35.sp
             )
         },
@@ -90,7 +93,9 @@ fun AppBar (
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
+        //on left
         navigationIcon = navigationIcon,
+        //on right
         actions = actionIcons
     )
 

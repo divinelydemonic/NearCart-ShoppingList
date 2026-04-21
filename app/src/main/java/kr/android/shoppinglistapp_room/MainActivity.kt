@@ -25,10 +25,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
 
+            //to track the theme of device
             var themeMode by rememberSaveable {
                 mutableStateOf(ThemeMode.SYSTEM)
             }
 
+            //dark mode toggle
             val isDark = when (themeMode) {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
                     Navigation(
                         modifier = Modifier.padding(innerPadding),
                         themeMode = themeMode,
+                        isDark = isDark,
                         onThemeChange = { themeMode = it },
                         navController = navController,
                         context = context

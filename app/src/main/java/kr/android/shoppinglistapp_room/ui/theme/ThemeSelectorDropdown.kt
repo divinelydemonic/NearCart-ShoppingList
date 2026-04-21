@@ -32,7 +32,6 @@ fun ThemeSelectorDropdown(
     current: ThemeMode,
     onChange: (ThemeMode) -> Unit
 ) {
-
     var expanded by remember { mutableStateOf(false) }
 
     Row(
@@ -48,7 +47,7 @@ fun ThemeSelectorDropdown(
         Icon(
             imageVector = getThemeIcon(current),
             contentDescription = "current theme",
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.width(6.dp))
@@ -57,7 +56,7 @@ fun ThemeSelectorDropdown(
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = "Open",
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.onSurface
         )
 
         // Dropdown menu
@@ -72,6 +71,7 @@ fun ThemeSelectorDropdown(
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
 
+                            //selected theme icon
                             Icon(
                                 imageVector = getThemeIcon(mode),
                                 contentDescription = null
@@ -79,6 +79,7 @@ fun ThemeSelectorDropdown(
 
                             Spacer(Modifier.width(8.dp))
 
+                            //selected theme label/name
                             Text(getThemeLabel(mode))
                         }
                     },
@@ -92,6 +93,7 @@ fun ThemeSelectorDropdown(
     }
 }
 
+//getting the theme icon  according to the theme
 @Composable
 fun getThemeIcon(mode: ThemeMode) = when (mode) {
     ThemeMode.LIGHT -> Icons.Default.LightMode
@@ -99,6 +101,8 @@ fun getThemeIcon(mode: ThemeMode) = when (mode) {
     ThemeMode.SYSTEM -> Icons.Default.Settings
 }
 
+
+//getting the theme label  according to the theme
 fun getThemeLabel(mode: ThemeMode) = when (mode) {
     ThemeMode.LIGHT -> "Light"
     ThemeMode.DARK -> "Dark"
