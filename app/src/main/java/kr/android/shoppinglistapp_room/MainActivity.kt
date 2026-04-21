@@ -8,15 +8,16 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
+import kr.android.shoppinglistapp_room.navigation.Navigation
 import kr.android.shoppinglistapp_room.ui.theme.ShoppingListApp_RoomTheme
 import kr.android.shoppinglistapp_room.ui.theme.ThemeMode
-import kr.android.shoppinglistapp_room.view.AppBarView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,14 +35,17 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
 
+            val navController = rememberNavController()
+            val context = LocalContext.current
+
             ShoppingListApp_RoomTheme (darkTheme = isDark) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AppBarView(
+                    Navigation(
                         modifier = Modifier.padding(innerPadding),
-                        "Shopping List",
-                        {},
                         themeMode = themeMode,
-                        onThemeChange = { themeMode = it }
+                        onThemeChange = { themeMode = it },
+                        navController = navController,
+                        context = context
                     )
                 }
             }

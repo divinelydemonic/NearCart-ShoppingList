@@ -39,7 +39,7 @@ fun ThemeSelectorDropdown(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable { expanded = true }
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
@@ -47,7 +47,8 @@ fun ThemeSelectorDropdown(
         // Selected Icon
         Icon(
             imageVector = getThemeIcon(current),
-            contentDescription = "current theme"
+            contentDescription = "current theme",
+            tint = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.width(6.dp))
@@ -55,7 +56,8 @@ fun ThemeSelectorDropdown(
         // Dropdown arrow
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
-            contentDescription = "Open"
+            contentDescription = "Open",
+            tint = MaterialTheme.colorScheme.primary
         )
 
         // Dropdown menu
@@ -63,7 +65,7 @@ fun ThemeSelectorDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             shape = RoundedCornerShape(16.dp),
-            containerColor = MaterialTheme.colorScheme.inverseOnSurface
+            containerColor = MaterialTheme.colorScheme.surface
         ) {
             ThemeMode.entries.forEach { mode ->
                 DropdownMenuItem(
