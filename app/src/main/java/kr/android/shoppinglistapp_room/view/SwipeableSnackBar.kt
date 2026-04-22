@@ -46,9 +46,9 @@ fun SwipeableSnackBar(
                             HapticFeedbackType.LongPress
                         )
                         snackBarData.dismiss()
-                        true
+                        true    //if swiped (!settled)
                     } else {
-                        false
+                        false   //if not swiped (settled)
                     }
                 }
             )
@@ -64,7 +64,6 @@ fun SwipeableSnackBar(
                                 Color.Green.copy(alpha = 0.15f),
                                 shape = RoundedCornerShape(16.dp)
                             )
-
                     )
                 },
                 content = {
