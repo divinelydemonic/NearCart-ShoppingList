@@ -23,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
+import kr.android.shoppinglistapp_room.navigation.Screens
 import kr.android.shoppinglistapp_room.viewmodel.LocationViewModel
 
 @Composable
@@ -118,7 +119,7 @@ fun LocationPermissionHandler(
             LaunchedEffect(Unit) {
                 locationUtil.requestLocationUpdates(locationViewModel)
                 if (locationViewModel.address.value.isEmpty()) {
-                    navController.navigate("locationDialog")
+                    navController.navigate(Screens.LocationSelector.route)
                 }
             }
             content()

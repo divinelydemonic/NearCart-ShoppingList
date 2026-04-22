@@ -1,6 +1,7 @@
 package kr.android.shoppinglistapp_room.view
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -54,10 +55,12 @@ fun LocationSelector(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center
     ) {
         Card(
             modifier = Modifier
+                .height(700.dp)
                 .padding(8.dp),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(
@@ -66,9 +69,9 @@ fun LocationSelector(
         ) {
 
             GoogleMap(
-                cameraPositionState = cameraPositionState,
                 properties = mapProperties,
                 uiSettings = uiSettings,
+                cameraPositionState = cameraPositionState,
                 onMapClick = { userLocation.value = it }
             ){
                 Marker(
