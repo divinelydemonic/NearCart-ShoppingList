@@ -13,19 +13,18 @@ interface ShoppingDao {
 
     //adding shopping item
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addItem(shoppingEntity : ShoppingItem)  : Long
+    suspend fun addItem(shoppingItem : ShoppingItem)  : Long
 
     @Update
-    suspend fun updateItem(shoppingEntity: ShoppingItem) : Int
+    suspend fun updateItem(shoppingItem: ShoppingItem) : Int
 
     @Delete
-    suspend fun deleteItem(shoppingEntity: ShoppingItem) : Int
+    suspend fun deleteItem(shoppingItem: ShoppingItem) : Int
 
     @Query("select * from `shopping_table`")
-    suspend fun getAllItems() : Flow<List<ShoppingItem>>
+    fun getAllItems() : Flow<List<ShoppingItem>>
 
     @Query("select * from `shopping_table` where id = :id")
-    suspend fun getItemById(id : Long) : Flow<ShoppingItem>
-
+    fun getItemById(id : Long) : Flow<ShoppingItem>
 
 }

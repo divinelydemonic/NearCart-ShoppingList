@@ -22,6 +22,7 @@ import kr.android.shoppinglistapp_room.ui.theme.ThemeMode
 import kr.android.shoppinglistapp_room.util.LocationPermissionHandler
 import kr.android.shoppinglistapp_room.util.LocationUtil
 import kr.android.shoppinglistapp_room.viewmodel.LocationViewModel
+import kr.android.shoppinglistapp_room.viewmodel.ShoppingViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,7 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
             }
 
+            val shoppingViewModel : ShoppingViewModel = viewModel()
             val locationViewModel : LocationViewModel = viewModel()
             val navController = rememberNavController()
             val context = LocalContext.current
@@ -58,6 +60,7 @@ class MainActivity : ComponentActivity() {
                             themeMode = themeMode,
                             isDark = isDark,
                             onThemeChange = { themeMode = it },
+                            shoppingViewModel = shoppingViewModel,
                             locationViewModel = locationViewModel,
                             navController = navController,
                             context = context,

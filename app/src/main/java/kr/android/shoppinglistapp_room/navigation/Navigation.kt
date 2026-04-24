@@ -11,15 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
+import androidx.navigation.navArgument
 import kr.android.shoppinglistapp_room.ui.theme.ThemeMode
 import kr.android.shoppinglistapp_room.util.LocationUtil
 import kr.android.shoppinglistapp_room.view.AddEditScreen
 import kr.android.shoppinglistapp_room.view.HomeScreen
 import kr.android.shoppinglistapp_room.view.LocationSelector
 import kr.android.shoppinglistapp_room.viewmodel.LocationViewModel
+import kr.android.shoppinglistapp_room.viewmodel.ShoppingViewModel
 
 @Composable
 fun Navigation (
@@ -27,6 +30,7 @@ fun Navigation (
     themeMode : ThemeMode,
     isDark : Boolean,
     onThemeChange : (ThemeMode) -> Unit,
+    shoppingViewModel: ShoppingViewModel,
     locationViewModel: LocationViewModel,
     navController : NavHostController,
     context : Context,
@@ -34,16 +38,26 @@ fun Navigation (
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screens.HomeScreen.route
+        startDestination = Screens.HomeScreen.route + "/0"
     ){
 
         //home screen
-        composable( route = Screens.HomeScreen.route ){
+        composable(
+            route = Screens.HomeScreen.route + "/{id}",
+            arguments = listOf(
+                navArgument("id"){
+                    type = NavType.LongType
+                    defaultValue = 0L
+                    nullable = false
+                }
+            )
+        ){
             HomeScreen(
                 themeMode = themeMode,
                 isDark = isDark,
                 onThemeChange = onThemeChange,
                 navController = navController,
+                shoppingViewModel = shoppingViewModel,
                 locationViewModel = locationViewModel,
                 locationUtil = locationUtil
             )
@@ -51,12 +65,17 @@ fun Navigation (
 
         //add-edit screen
         composable( route = Screens.AddEditScreen.route ){
+            entry ->
+
+            val id = entry.arguments?.getLong("id") ?: 0L
+
             AddEditScreen(
-                id = 0L,
+                id = id,
                 isDark = isDark,
                 themeMode = themeMode,
                 onThemeChange = onThemeChange,
                 locationUtil = locationUtil,
+                shoppingViewModel = shoppingViewModel,
                 locationViewModel = locationViewModel,
                 navController = navController,
                 onValueChange = {},

@@ -4,14 +4,14 @@ import kotlinx.coroutines.flow.Flow
 
 class ShoppingRepository (private val shoppingDao: ShoppingDao) {
 
-    suspend fun addItem(shoppingEntity : ShoppingItem){ shoppingDao.addItem(shoppingEntity ) }
+    suspend fun addItem(shoppingItem : ShoppingItem){ shoppingDao.addItem(shoppingItem ) }
 
-    suspend fun updateItem(shoppingEntity: ShoppingItem){ shoppingDao.updateItem(shoppingEntity) }
+    suspend fun updateItem(shoppingItem: ShoppingItem){ shoppingDao.updateItem(shoppingItem) }
 
-    suspend fun deleteItem(shoppingEntity: ShoppingItem){ shoppingDao.deleteItem(shoppingEntity) }
+    suspend fun deleteItem(shoppingItem: ShoppingItem){ shoppingDao.deleteItem(shoppingItem) }
 
-    suspend fun getAllItems() : Flow<List<ShoppingItem>> = shoppingDao.getAllItems()
+    fun getAllItems() : Flow<List<ShoppingItem>> = shoppingDao.getAllItems()
 
-    suspend fun getItemById(id : Long) : Flow<ShoppingItem> = shoppingDao.getItemById(id)
+    fun getItemById(id : Long) : Flow<ShoppingItem> = shoppingDao.getItemById(id)
 
 }

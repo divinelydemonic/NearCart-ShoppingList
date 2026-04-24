@@ -1,26 +1,34 @@
 package kr.android.shoppinglistapp_room.view
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddShoppingCart
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
+import kr.android.shoppinglistapp_room.R
 import kr.android.shoppinglistapp_room.model.ShoppingItem
 import kr.android.shoppinglistapp_room.navigation.Screens
 import kr.android.shoppinglistapp_room.ui.theme.GreenPrimaryContainerDark
@@ -28,6 +36,7 @@ import kr.android.shoppinglistapp_room.ui.theme.ShoppingListApp_RoomTheme
 import kr.android.shoppinglistapp_room.ui.theme.ThemeMode
 import kr.android.shoppinglistapp_room.util.LocationUtil
 import kr.android.shoppinglistapp_room.viewmodel.LocationViewModel
+import kr.android.shoppinglistapp_room.viewmodel.ShoppingViewModel
 
 @Composable
 fun HomeScreen(
@@ -35,11 +44,17 @@ fun HomeScreen(
     isDark : Boolean,
     onThemeChange : (ThemeMode) -> Unit,
     navController: NavHostController,
+    shoppingViewModel: ShoppingViewModel,
     locationViewModel: LocationViewModel,
     locationUtil: LocationUtil
 ) {
 
     val snackBarHostState = remember { SnackbarHostState() }
+
+    var showDialog by remember { mutableStateOf(false) }
+    var pendingItem by remember { mutableStateOf<ShoppingItem?>(null) }
+
+    val haptic = LocalHapticFeedback.current
 
     ShoppingListApp_RoomTheme (darkTheme = isDark) {
         Scaffold(
@@ -56,7 +71,7 @@ fun HomeScreen(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { navController.navigate(Screens.AddEditScreen.route) },
+                    onClick = { navController.navigate(Screens.AddEditScreen.route + "/0L") },
                     modifier = Modifier
                         .padding(30.dp)
                         .size(70.dp)
@@ -78,27 +93,171 @@ fun HomeScreen(
             },
             snackbarHost = { SwipeableSnackBar(snackBarHostState) }
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-            ) {
-                items(15){
-                    ShoppingItemView(
-                        ShoppingItem(
-                            0L,
-                            "Eggs",
-                            30,
-                            "packets"
-                        ),
-                        isDark = isDark,
-                        { navController.navigate(Screens.AddEditScreen.route) }
-                    )
+
+            val shoppingList = shoppingViewModel.getAllItems.collectAsState(initial = listOf()) //initially empty list
+
+            val scope = rememberCoroutineScope()
+
+            if (shoppingList.value.isEmpty()){
+                // Empty State UI
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Image(
+                            painter = painterResource(id = R.drawable.empty_shoppinglist),
+                            contentDescription = "Empty wishlist",
+                            modifier = Modifier.size(300.dp)
+                        )
+
+                        Text(
+                            text = "No items yet",
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = "Tap + to add one!",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            } else {
+                //shopping list
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                ) {
+                    items(
+                        shoppingList.value,
+                        key = { it.id }
+                    ){
+                        item ->
+
+                        val dismissState = rememberSwipeToDismissBoxState (
+                            confirmValueChange = {
+                                value ->
+                                if (value == SwipeToDismissBoxValue.EndToStart){
+                                    pendingItem = item
+                                    showDialog = true
+                                    false
+                                } else {
+                                    false
+                                }
+                            },
+                            positionalThreshold = { 0.5f }
+                        )
+
+                        SwipeToDismissBox(
+                            state = dismissState,
+                            backgroundContent = {
+
+                                val direction = dismissState.dismissDirection
+                                val bgColor =
+                                    if (direction == SwipeToDismissBoxValue.StartToEnd)
+                                        Color.LightGray.copy(0.5f)
+                                    else Color(0xFFFF5050)
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(24.dp))
+                                        .background(bgColor),
+                                    contentAlignment = Alignment.CenterEnd
+                                ) {
+                                    Icon(
+                                        Icons.Default.DeleteSweep,
+                                        null,
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .padding(end = 16.dp)
+                                            .size(35.dp)
+                                    )
+                                }
+                            },
+                            enableDismissFromEndToStart = true,
+                            enableDismissFromStartToEnd = true
+                        ){
+                            ShoppingItemView(
+                                item = item,
+                                isDark = isDark,
+                                onClick = {
+                                    navController.navigate(route = Screens.AddEditScreen.route+"/${item.id}")
+                                }
+                            )
+                        }
+
+                        var hapticTriggered by remember { mutableStateOf(false) }
+
+                        LaunchedEffect(dismissState.progress) {
+                            if (dismissState.progress >= 0.5f && !hapticTriggered) {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                hapticTriggered = true
+                            }
+
+                            if (dismissState.progress < 0.5f) {
+                                hapticTriggered = false
+                            }
+                        }
+
+                        if (showDialog && pendingItem != null) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    showDialog = false
+                                    pendingItem = null
+                                },
+                                title = {
+                                    Text("Delete Item")
+                                },
+                                text = {
+                                    Text("Are you sure you want to delete \"${pendingItem?.name}\"?")
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            shoppingViewModel.deleteItem(pendingItem!!)
+                                            scope.launch {
+                                                snackBarHostState.showSnackbar("${pendingItem?.name} deleted")
+                                            }
+                                            showDialog = false
+                                            pendingItem = null
+                                        }
+                                    ) {
+                                        Text("Delete", color = MaterialTheme.colorScheme.error)
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            showDialog = false
+                                            pendingItem = null
+                                        }
+                                    ) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            )
+                        }
+
+                        LaunchedEffect(showDialog) {
+                            if (!showDialog && dismissState.currentValue != SwipeToDismissBoxValue.Settled) {
+                                dismissState.reset()
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-
 }
 
 @Composable
