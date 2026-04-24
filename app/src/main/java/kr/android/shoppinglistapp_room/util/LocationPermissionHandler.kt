@@ -118,7 +118,7 @@ fun LocationPermissionHandler(
         permissionGranted -> {
             LaunchedEffect(Unit) {
                 locationUtil.requestLocationUpdates(locationViewModel)
-                if (locationViewModel.address.value.isEmpty()) {
+                if (locationViewModel.addresses.value.isEmpty()) {
                     navController.navigate(Screens.LocationSelector.route)
                 }
             }
