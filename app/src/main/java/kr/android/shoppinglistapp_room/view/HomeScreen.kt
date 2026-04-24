@@ -113,12 +113,13 @@ fun HomeScreen(
                         Image(
                             painter = painterResource(id = R.drawable.empty_shoppinglist),
                             contentDescription = "Empty wishlist",
-                            modifier = Modifier.size(300.dp)
+                            modifier = Modifier.size(470.dp)
                         )
 
                         Text(
                             text = "No items yet",
-                            style = MaterialTheme.typography.headlineMedium
+                            fontWeight = FontWeight.SemiBold,
+                            style = MaterialTheme.typography.displayLarge
                         )
 
                         Spacer(Modifier.height(4.dp))
