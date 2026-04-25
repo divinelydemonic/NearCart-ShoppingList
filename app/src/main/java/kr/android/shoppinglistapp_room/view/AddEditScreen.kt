@@ -380,7 +380,7 @@ fun AddEditScreen(
                                     )
                                 )
 
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
 
                                 scope.launch {
                                     snackBarHostState.showSnackbar(
