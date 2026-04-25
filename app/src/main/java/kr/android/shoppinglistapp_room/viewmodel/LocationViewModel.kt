@@ -1,6 +1,5 @@
 package kr.android.shoppinglistapp_room.viewmodel
 
-import android.R.attr.x
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +12,6 @@ import kr.android.shoppinglistapp_room.model.GeocodingResult
 import kr.android.shoppinglistapp_room.model.LocationData
 import kr.android.shoppinglistapp_room.model.NearbyPlacesResult
 import kr.android.shoppinglistapp_room.network_call.RetrofitClient
-import kotlin.collections.listOf
 
 class LocationViewModel : ViewModel() {
 
@@ -68,7 +66,7 @@ class LocationViewModel : ViewModel() {
                 val allPlaces = mutableListOf<NearbyPlacesResult>()
                 val api = RetrofitClient.nearbyPlacesCreate()
 
-                // Page 1
+                // Page 1 (INSTANT UI)
                 val response1 = api.getNearbyPlaces(
                     location = "${location.latitude},${location.longitude}",
                     radius = 5000,
@@ -76,9 +74,10 @@ class LocationViewModel : ViewModel() {
                     key = BuildConfig.LOCATION_API_KEY
                 )
                 allPlaces.addAll(response1.results)
+                _places.value = allPlaces.distinctBy { it.place_id }
                 Log.d("PLACES", "Page1: ${response1.results.size}")
 
-                // Page 2
+                // Page 2 (background)
                 response1.next_page_token?.let { token1 ->
                     delay(2000)
                     val response2 = api.getNearbyPlaces(
@@ -86,9 +85,10 @@ class LocationViewModel : ViewModel() {
                         key = BuildConfig.LOCATION_API_KEY
                     )
                     allPlaces.addAll(response2.results)
+                    _places.value = allPlaces.distinctBy { it.place_id }
                     Log.d("PLACES", "Page2: ${response2.results.size}")
 
-                    // Page 3
+                    // Page 3 (background)
                     response2.next_page_token?.let { token2 ->
                         delay(2000)
                         val response3 = api.getNearbyPlaces(
@@ -96,16 +96,12 @@ class LocationViewModel : ViewModel() {
                             key = BuildConfig.LOCATION_API_KEY
                         )
                         allPlaces.addAll(response3.results)
+                        _places.value = allPlaces.distinctBy { it.place_id }
                         Log.d("PLACES", "Page3: ${response3.results.size}")
                     }
                 }
 
-                // remove duplicates
-                val uniquePlaces = allPlaces.distinctBy { it.place_id }
-
-                // Update ONCE
-                _places.value = uniquePlaces
-                Log.d("PLACES_TOTAL", "Total: ${uniquePlaces.size}")
+                Log.d("PLACES_TOTAL", "Final: ${allPlaces.size}")
 
             } catch (e: Exception) {
                 Log.d("places", "${e.cause} ${e.message}")

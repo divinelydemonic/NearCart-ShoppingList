@@ -385,6 +385,7 @@ fun ShoppingItemView (
                     )
                     Text(
                         text = item.unit,
+                        fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant                    )
                 }
