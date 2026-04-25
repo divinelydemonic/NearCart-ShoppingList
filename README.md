@@ -120,6 +120,52 @@ graph TD
 https://youtu.be/4nP43BVoWcs
 ```
 
+>Demo Clips
+
+<p>
+  
+<b>Current location fetching</b>
+
+https://github.com/user-attachments/assets/49b371c2-d0bb-40ad-95a0-24884bbd84d6
+
+<b>Light and dark theme map with Google Map navigation</b>
+
+https://github.com/user-attachments/assets/fedd1329-8e42-4e16-9fad-f48cf869d4b4
+
+<b>Navigation from different location to nearby shop</b>
+
+https://github.com/user-attachments/assets/793afb47-8b82-44c7-857c-b23210a33470
+
+<b>Nearby shop changes according to user's current location</b>
+
+https://github.com/user-attachments/assets/b0236ca0-ada3-4e71-bcf2-d8c67b3f8fab
+
+<b>Theme toggle</b>
+
+https://github.com/user-attachments/assets/98ecd7a8-fece-49ca-a980-91e808f9c796
+
+<b>Item adding</b>
+
+https://github.com/user-attachments/assets/a8aeb038-cb72-418c-9aa4-1ec44c528741
+
+<b>Item update</b>
+
+https://github.com/user-attachments/assets/f55b2a84-526e-4e5d-b921-ed9549941d13
+
+<b>Item delete</b>
+
+https://github.com/user-attachments/assets/bccd6a92-bf67-435d-917c-cdf1803b3c81
+
+<b>Smooth Scroll</b>
+
+https://github.com/user-attachments/assets/88f79274-e5e4-47c2-afe8-18a8ed94fae4
+
+<b>Sorting in checked unchecked items</b>
+
+https://github.com/user-attachments/assets/656e922b-9a42-4d81-9d51-66f19ce4c3b0
+
+</p>
+
 ---
 
 ## 🌐 API Integration
